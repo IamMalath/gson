@@ -53,6 +53,12 @@ public class FieldExclusionTest {
     assertThat(result).isEqualTo(target.toJson());
   }
 
+
+  /** REFACTORED CODE START **/
+  private Gson prepareDefaultExclusionConfig() {
+    return new GsonBuilder().create();
+  }
+
   @Test
   public void testInnerClassExclusion() {
     Gson gson = new GsonBuilder().disableInnerClassSerialization().create();
@@ -63,16 +69,20 @@ public class FieldExclusionTest {
 
   @Test
   public void testDefaultNestedStaticClassIncluded() {
-    Gson gson = new Gson();
+    Gson gson = prepareDefaultExclusionConfig();
     Outer.Inner target = outer.new Inner(VALUE);
+
     String result = gson.toJson(target);
     assertThat(result).isEqualTo(target.toJson());
 
-    gson = new GsonBuilder().create();
+    // Can re-use helper method again if needed
+    gson = prepareDefaultExclusionConfig();
     target = outer.new Inner(VALUE);
     result = gson.toJson(target);
     assertThat(result).isEqualTo(target.toJson());
   }
+
+  /** REFACTORED CODE END **/
 
   private static class Outer {
 
